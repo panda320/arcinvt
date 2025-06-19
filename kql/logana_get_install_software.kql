@@ -1,0 +1,10 @@
+ConfigurationData
+| where ConfigDataType == "Software"
+| where SoftwareType in ("Application", "Package")
+| summarize LatestTime = max(TimeGenerated) by Computer
+| join kind=inner (
+    ConfigurationData
+    | where ConfigDataType == "Software"
+    | where SoftwareType in ("Application", "Package")
+) on $left.Computer == $right.Computer and $left.LatestTime == $right.TimeGenerated
+| project Computer, SoftwareName, CurrentVersion , Publisher

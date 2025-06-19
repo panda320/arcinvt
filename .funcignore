@@ -1,0 +1,7 @@
+.venv
+
+#MySettings
+.vscode/
+*.md
+tests/
+local.settings.json
