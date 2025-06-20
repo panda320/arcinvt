@@ -1,5 +1,4 @@
 import azure.functions as func
-import datetime
 import json
 import logging
 
@@ -11,11 +10,11 @@ if not os.path.exists('/tmp/csv'):
     os.makedirs('/tmp/csv')
 
 from azure.functions import HttpRequest, HttpResponse
-#from azure.functions.decorators import FunctionApp, http_output, http_trigger
 
 from handlers.rscgrf_get_azure_virtual_machines import rscazvmget
 from handlers.rscgrf_get_azure_network_interfaces import rscazniget
 from handlers.rscgrf_get_hybrid_compute_machines import rschbcmget
+from handlers.logana_get_install_software import lgainstget
 
 app = func.FunctionApp()
 
@@ -60,6 +59,24 @@ def rscgrf_get_hybrid_compute_machines(req: func.HttpRequest) -> func.HttpRespon
     logging.info('Python HTTP trigger function processed a request for Hybrid Compute Machines.')
     try:
         response = rschbcmget(req)
+        return HttpResponse(
+            response['body'],
+            status_code=response['status'],
+            mimetype="application/json"
+        )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
+        return HttpResponse(
+            json.dumps({"error": str(e)}),
+            status_code=500,
+            mimetype="application/json"
+        )
+
+@app.route(route="logana_get_install_software", auth_level=func.AuthLevel.FUNCTION)
+def logana_get_install_software(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request for Log Analytics - Get Install Software.')
+    try:
+        response = lgainstget(req)
         return HttpResponse(
             response['body'],
             status_code=response['status'],

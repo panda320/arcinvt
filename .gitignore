@@ -49,4 +49,6 @@ __azurite_db*__.json
 
 #MySettings
 .vscode/
-
+backup/
+handlers/backup/
+*.bak
