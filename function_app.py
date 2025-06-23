@@ -15,6 +15,7 @@ from handlers.rscgrf_get_azure_virtual_machines import rscazvmget
 from handlers.rscgrf_get_azure_network_interfaces import rscazniget
 from handlers.rscgrf_get_hybrid_compute_machines import rschbcmget
 from handlers.logana_get_install_software import lgainstget
+from handlers.sql_refresh_hybrid_compute_machines import truncate_table_and_insert
 
 app = func.FunctionApp()
 
@@ -80,6 +81,24 @@ def logana_get_install_software(req: func.HttpRequest) -> func.HttpResponse:
         return HttpResponse(
             response['body'],
             status_code=response['status'],
+            mimetype="application/json"
+        )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
+        return HttpResponse(
+            json.dumps({"error": str(e)}),
+            status_code=500,
+            mimetype="application/json"
+        )
+
+@app.route(route="sql_refresh_hybrid_compute_machines", auth_level=func.AuthLevel.FUNCTION)
+def sql_refresh_hybrid_compute_machines(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request for SQL Refresh Hybrid Compute Machines.')
+    try:
+        response = truncate_table_and_insert(req)
+        return HttpResponse(
+            json.dumps(response),
+            status_code=200,
             mimetype="application/json"
         )
     except Exception as e:
