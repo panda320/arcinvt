@@ -5,15 +5,30 @@ def truncate_table_and_insert(req):
     csv_file_name = '/tmp/csv/rscgrf_get_hybrid_compute_machines.csv'
     sql_server = 'ssdomsqlserver01.database.windows.net'
     database_name = 'ssdomsqldatabase01'
-    table_name = 'rscgrf_get_hybrid_compute_machines'
     schema_name = 'azinvt'
+    table_name = 'rscgrf_get_hybrid_compute_machines'
     # テーブルをtruncateする
-    truncate_table(req, sql_server, database_name, table_name, schema_name)
-    
-    # CSVファイルをSQL Databaseにインポートする
-    insert_csv_to_sql(req, csv_file_name, sql_server, database_name, table_name, schema_name)
-    
+    result = truncate_table(req, sql_server, database_name, table_name, schema_name)
+    #returnで返ってきたstatusとmessageを受け取る
+    if result['status'] == 'error':
+        return {
+            "status": "error",
+            "message": result['message']
+        }
+    else:
+        print(result['message'])
+        # CSVファイルをSQL Databaseにインポートする
+        result = insert_csv_to_sql(req, csv_file_name, sql_server, database_name, table_name, schema_name)
+    # returnで返ってきたstatusとmessageを受け取る
+    if result['status'] == 'error':
+        return {
+            "status": "error",
+            "message": result['message']
+        }
+    else:
+        print(result['message'])
+    # 成功した場合のメッセージを返す 
     return {
         "status": "success",
-        "message": f"Data from {csv_file_name} has been inserted into {schema_name}.{table_name}."
+        "message": f"Table {schema_name}.{table_name} was truncated and data from {csv_file_name} has been inserted."
     }

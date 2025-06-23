@@ -94,17 +94,16 @@ def logana_get_install_software(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="sql_refresh_hybrid_compute_machines", auth_level=func.AuthLevel.FUNCTION)
 def sql_refresh_hybrid_compute_machines(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request for SQL Refresh Hybrid Compute Machines.')
-    try:
-        response = truncate_table_and_insert(req)
+    response = truncate_table_and_insert(req)
+    if response['status'] == 'success':
         return HttpResponse(
-            json.dumps(response),
-            status_code=200,
-            mimetype="application/json"
-        )
-    except Exception as e:
-        logging.error(f"Error processing request: {e}")
-        return HttpResponse(
-            json.dumps({"error": str(e)}),
-            status_code=500,
-            mimetype="application/json"
-        )
+        json.dumps({"200": response['message']}),
+        status_code=200,
+        mimetype="application/json"
+    )
+    logging.error(f"Error processing request: {response['message']}")
+    return HttpResponse(
+        json.dumps({"500": response['message']}),
+        status_code=500,
+        mimetype="application/json"
+    )

@@ -23,17 +23,19 @@ def insert_csv_to_sql(req, csv_file_name, sql_server, database_name, table_name,
          placeholders = ','.join(['?'] * len(columns))
          sql = f"INSERT INTO {schema_name}.{table_name} VALUES ({placeholders})"
          data = list(reader)
-         cursor.executemany(sql, data)
-         conn.commit()
-     cursor.close()
-     conn.close()
-
-'''
-#insert_csv_to_sqlの実行test
-csv_file_name = '/tmp/csv/rscgrf_get_hybrid_compute_machines.csv'
-sql_server = 'ssdomsqlserver01.database.windows.net'
-database_name = 'ssdomsqldatabase01'
-table_name = 'rscgrf_get_hybrid_compute_machines'
-schema_name = 'azinvt'
-#insert_csv_to_sql(csv_file_name, sql_server, database_name, table_name, schema_name)
-'''
+         try:
+             cursor.executemany(sql, data)
+             conn.commit()
+             return {
+                 "status": "success",
+                 "message": f"Data from {csv_file_name} has been inserted into {schema_name}.{table_name}."
+             }
+         except Exception as e:
+             conn.rollback()
+             return {
+                 "status": "error",
+                 "message": str(e)
+             }
+         finally:
+            cursor.close()
+            conn.close()
