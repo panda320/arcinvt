@@ -9,3 +9,5 @@ azure-identity
 azure-mgmt-resourcegraph
 azure-monitor-query
 pandas
+pyodbc
+
