@@ -32,3 +32,6 @@ def truncate_table_and_insert(req):
         "status": "success",
         "message": f"Table {schema_name}.{table_name} was truncated and data from {csv_file_name} has been inserted."
     }
+
+#デバック用
+#truncate_table_and_insert (req=None)

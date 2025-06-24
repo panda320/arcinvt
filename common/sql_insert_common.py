@@ -16,7 +16,8 @@ def insert_csv_to_sql(req, csv_file_name, sql_server, database_name, table_name,
      conn_str = f'DRIVER={{{odbc_driver}}};SERVER={sql_server};DATABASE={database_name};Authentication=ActiveDirectoryMsi;'
      conn = pyodbc.connect(conn_str)
      cursor = conn.cursor()
-     cursor.fast_executemany = True
+     #cursor.fast_executemany = True #ODBCドライバ内部的バッファサイズ制約のため、Trueにするとエラーが発生することがある
+     cursor.fast_executemany = False
      with open(csv_file_name, 'r', encoding='utf-8') as f:
          reader = csv.reader(f)
          columns = next(reader)
