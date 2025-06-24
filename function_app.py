@@ -99,67 +99,77 @@ def logana_get_install_software(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="sql_refresh_azure_virtual_machines", auth_level=func.AuthLevel.FUNCTION)
 def sql_refresh_azure_virtual_machines(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request for SQL Refresh Azure Virtual Machines.')
-    response = truncate_table_and_insert_vm(req)
-    if response['status'] == 'success':
+    try:
+        response = truncate_table_and_insert_vm(req)
+        if response['status'] == 'success':
+            return HttpResponse(
+                json.dumps({"200": response['message']}),
+                status_code=200,
+                mimetype="application/json"
+            )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
         return HttpResponse(
-            json.dumps({"200": response['message']}),
-            status_code=200,
+            json.dumps({"error": str(e)}),
+            status_code=500,
             mimetype="application/json"
         )
-    logging.error(f"Error processing request: {response['message']}")
-    return HttpResponse(
-        json.dumps({"500": response['message']}),
-        status_code=500,
-        mimetype="application/json"
-    )
+
 
 @app.route(route="sql_refresh_azure_network_interfaces", auth_level=func.AuthLevel.FUNCTION)
 def sql_refresh_azure_network_interfaces(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request for SQL Refresh Azure Network Interfaces.')
-    response = truncate_table_and_insert_nif(req)
-    if response['status'] == 'success':
+    try:
+        response = truncate_table_and_insert_nif(req)
+        if response['status'] == 'success':
+            return HttpResponse(
+                json.dumps({"200": response['message']}),
+                status_code=200,
+                mimetype="application/json"
+            )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
         return HttpResponse(
-            json.dumps({"200": response['message']}),
-            status_code=200,
+            json.dumps({"error": str(e)}),
+            status_code=500,
             mimetype="application/json"
         )
-    logging.error(f"Error processing request: {response['message']}")
-    return HttpResponse(
-        json.dumps({"500": response['message']}),
-        status_code=500,
-        mimetype="application/json"
-    )
 
 @app.route(route="sql_refresh_hybrid_compute_machines", auth_level=func.AuthLevel.FUNCTION)
 def sql_refresh_hybrid_compute_machines(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request for SQL Refresh Hybrid Compute Machines.')
-    response = truncate_table_and_insert_hyb(req)
-    if response['status'] == 'success':
+    try:
+        response = truncate_table_and_insert_hyb(req)
+        if response['status'] == 'success':
+            return HttpResponse(
+                json.dumps({"200": response['message']}),
+                status_code=200,
+                mimetype="application/json"
+            )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
         return HttpResponse(
-        json.dumps({"200": response['message']}),
-        status_code=200,
-        mimetype="application/json"
-    )
-    logging.error(f"Error processing request: {response['message']}")
-    return HttpResponse(
-        json.dumps({"500": response['message']}),
-        status_code=500,
-        mimetype="application/json"
-    )
+            json.dumps({"error": str(e)}),
+            status_code=500,
+            mimetype="application/json"
+        )
 
 @app.route(route="sql_refresh_install_software", auth_level=func.AuthLevel.FUNCTION)
 def sql_refresh_install_software(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request for SQL Refresh Install Software.')
-    response = truncate_table_and_insert_softinst(req)
-    if response['status'] == 'success':
+    try:
+        response = truncate_table_and_insert_softinst(req)
+        if response['status'] == 'success':
+            return HttpResponse(
+                json.dumps({"200": response['message']}),
+                status_code=200,
+                mimetype="application/json"
+            )
+    except Exception as e:
+        logging.error(f"Error processing request: {e}")
         return HttpResponse(
-            json.dumps({"200": response['message']}),
-            status_code=200,
+            json.dumps({"error": str(e)}),
+            status_code=500,
             mimetype="application/json"
         )
-    logging.error(f"Error processing request: {response['message']}")
-    return HttpResponse(
-        json.dumps({"500": response['message']}),
-        status_code=500,
-        mimetype="application/json"
-    )
+    
