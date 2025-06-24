@@ -7,6 +7,7 @@
 
 import json
 import pandas as pd
+from datetime import timedelta
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient, LogsQueryStatus
 
@@ -20,10 +21,13 @@ def lgacommon(req, kql_file_name, json_file_name, csv_file_name, workspace_id):
     client = LogsQueryClient(credential)
 
     # クエリ実行
+    # Note: timespan=Noneは、クエリの期間を指定しないことを意味します。
+    # 過去90日間に設定
     response = client.query_workspace(
         workspace_id=workspace_id,
         query=kql_query,
-        timespan=None
+        #timespan=None
+        timespan=timedelta(days=90)
     )
 
     # クエリ実行
