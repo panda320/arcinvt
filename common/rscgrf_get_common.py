@@ -41,8 +41,13 @@ def rsccommon(req, json_file_name, csv_file_name, resource_type):
         with open(json_file_name, 'w') as f:
             json.dump(response.data, f, indent=2)
 
-        # 取得したリソース情報をJSONファイルに保存
-        df = pd.json_normalize(response.data)
+        # 取得したリソース情報をCSVファイルに保存
+        # JSONの0階層目までをCSV化
+        df = pd.json_normalize(response.data, max_level=0)
+        # 各列をチェックし、dict や list の場合は json.dumps() でダブルクォート形式に
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: json.dumps(x, ensure_ascii=False) if isinstance(x, (dict, list)) else x)
+        # CSVファイルに保存
         df.to_csv(csv_file_name, index=False, encoding='utf-8-sig')
 
         # レスポンスデータの作成
